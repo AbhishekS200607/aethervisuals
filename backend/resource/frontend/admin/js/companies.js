@@ -11,10 +11,12 @@ function updateBreadcrumb() {
   const bc = document.getElementById('breadcrumb');
   let html = '<a id="bc-home">Companies</a>';
   if (state.currentCompany) {
-    html += ` / <a id="bc-company">${escHtml(state.currentCompany.name)}</a>`;
+    html += '<span class="breadcrumb-sep">/</span>';
+    html += `<a id="bc-company">${escHtml(state.currentCompany.name)}</a>`;
   }
   if (state.currentFolder) {
-    html += ` / ${escHtml(state.currentFolder.name)}`;
+    html += '<span class="breadcrumb-sep">/</span>';
+    html += `<span>${escHtml(state.currentFolder.name)}</span>`;
   }
   bc.innerHTML = html;
 
@@ -41,9 +43,12 @@ async function loadCompanies() {
   const list = document.getElementById('companies-list');
 
   if (!companies.length) {
-    list.innerHTML = '<div class="empty-state">No companies yet. Create one to get started.</div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏢</div><p>No companies yet. Create one to get started.</p></div>';
+    document.getElementById('companies-count').textContent = '';
     return;
   }
+
+  document.getElementById('companies-count').textContent = `${companies.length}`;
 
   list.innerHTML = companies.map(c => `
     <div class="card" data-id="${c.id}" data-name="${escHtml(c.name)}">

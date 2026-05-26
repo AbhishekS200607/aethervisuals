@@ -51,6 +51,9 @@ document.getElementById('btn-regen-link').addEventListener('click', () => {
 document.getElementById('link-modal-close').addEventListener('click', () => {
   document.getElementById('link-modal-overlay').classList.add('hidden');
 });
+document.getElementById('link-modal-close-btn').addEventListener('click', () => {
+  document.getElementById('link-modal-overlay').classList.add('hidden');
+});
 
 // ─── Generic modal helpers ────────────────────────────────────────────────────
 function showModal(title, bodyHtml, onConfirm) {
@@ -66,6 +69,7 @@ function hideModal() {
 }
 
 document.getElementById('modal-cancel').addEventListener('click', hideModal);
+document.getElementById('modal-x').addEventListener('click', hideModal);
 document.getElementById('modal-overlay').addEventListener('click', (e) => {
   if (e.target.id === 'modal-overlay') hideModal();
 });

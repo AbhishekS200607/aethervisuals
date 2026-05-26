@@ -2,24 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>AetherVisuals — Admin</title>
   <link rel="stylesheet" href="/admin/css/admin.css" />
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- LOGIN -->
   <div id="login-screen">
     <div class="login-card">
-      <div class="brand">
-        <span class="brand-icon">◈</span>
-        <span class="brand-name">AetherVisuals</span>
+      <div class="login-brand">
+        <span class="login-icon">◈</span>
+        <span class="login-title">AetherVisuals</span>
       </div>
-      <h2>Admin Login</h2>
+      <p class="login-sub">Admin Portal</p>
       <form id="login-form">
-        <input type="email" id="login-email" placeholder="Email" required />
-        <input type="password" id="login-password" placeholder="Password" required />
-        <button type="submit" id="login-btn">Sign In</button>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="admin@example.com" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" id="login-btn" class="btn-primary btn-full">Sign In</button>
         <p id="login-error" class="error-msg"></p>
       </form>
     </div>
@@ -27,73 +33,118 @@
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
-    <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+
+    <!-- Mobile topbar -->
+    <header class="topbar">
+      <button class="topbar-toggle" id="sidebar-toggle">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-brand">
+        <span class="brand-icon">◈</span>
+        <span class="brand-name">AetherVisuals</span>
+      </div>
+      <div class="topbar-right">
+        <button id="topbar-logout" class="topbar-logout" title="Logout">↩</button>
+      </div>
+    </header>
+
     <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand">
+      <div class="sidebar-header">
         <span class="brand-icon">◈</span>
         <span class="brand-name">AetherVisuals</span>
       </div>
       <nav class="sidebar-nav">
-        <a href="#" class="nav-item active" id="nav-companies">Companies</a>
-        <a href="#" class="nav-item" id="nav-logs">Access Logs</a>
+        <a href="#" class="nav-item active" id="nav-companies">
+          <span class="nav-icon">🏢</span> Companies
+        </a>
+        <a href="#" class="nav-item" id="nav-logs">
+          <span class="nav-icon">📋</span> Access Logs
+        </a>
       </nav>
-      <button id="logout-btn" class="logout-btn">Logout</button>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <span class="user-avatar">A</span>
+          <span class="user-label">Admin</span>
+        </div>
+        <button id="logout-btn" class="logout-btn" title="Logout">↩</button>
+      </div>
     </aside>
 
+    <!-- Main -->
     <main class="main-content">
-      <div id="breadcrumb" class="breadcrumb">Home</div>
+      <div id="breadcrumb" class="breadcrumb"></div>
 
-      <!-- COMPANIES VIEW -->
+      <!-- COMPANIES -->
       <div id="view-companies">
         <div class="action-bar">
-          <h2>Companies</h2>
-          <button id="btn-new-company" class="btn-primary">+ New Company</button>
+          <div class="action-bar-left">
+            <h1 class="page-title">Companies</h1>
+            <span class="page-count" id="companies-count"></span>
+          </div>
+          <button id="btn-new-company" class="btn-primary">
+            <span>+</span> New Company
+          </button>
         </div>
         <div id="companies-list" class="card-grid"></div>
       </div>
 
-      <!-- FOLDERS VIEW -->
+      <!-- FOLDERS -->
       <div id="view-folders" class="hidden">
         <div class="action-bar">
-          <h2 id="folders-title">Folders</h2>
+          <div class="action-bar-left">
+            <h1 class="page-title" id="folders-title">Folders</h1>
+            <span class="page-count" id="folders-count"></span>
+          </div>
           <div class="action-group">
-            <button id="btn-company-link" class="btn-secondary">Get Company Link</button>
-            <button id="btn-new-folder" class="btn-primary">+ New Folder</button>
+            <button id="btn-company-link" class="btn-secondary">🔗 Company Link</button>
+            <button id="btn-new-folder" class="btn-primary"><span>+</span> New Folder</button>
           </div>
         </div>
         <div id="folders-list" class="card-grid"></div>
       </div>
 
-      <!-- ASSETS VIEW -->
+      <!-- ASSETS -->
       <div id="view-assets" class="hidden">
         <div class="action-bar">
-          <h2 id="assets-title">Assets</h2>
-          <div class="action-group">
-            <button id="btn-folder-link" class="btn-secondary">Get Folder Link</button>
+          <div class="action-bar-left">
+            <h1 class="page-title" id="assets-title">Assets</h1>
+            <span class="page-count" id="assets-count"></span>
           </div>
+          <button id="btn-folder-link" class="btn-secondary">🔗 Folder Link</button>
         </div>
+
         <div id="drop-zone" class="drop-zone">
-          <p>Drag & drop files here, or <label for="file-input" class="file-label">browse</label></p>
+          <div class="drop-zone-icon">⬆</div>
+          <p class="drop-zone-text">Drop files here to upload</p>
+          <p class="drop-zone-sub">or <label for="file-input" class="file-label">browse files</label></p>
           <input type="file" id="file-input" multiple class="hidden" />
           <div id="upload-progress" class="upload-progress hidden">
-            <div id="progress-bar" class="progress-bar"></div>
+            <div class="progress-track">
+              <div id="progress-bar" class="progress-bar"></div>
+            </div>
             <span id="progress-text">Uploading...</span>
           </div>
         </div>
+
         <div id="assets-list" class="asset-grid"></div>
       </div>
     </main>
   </div>
 
-  <!-- MODAL -->
+  <!-- CONFIRM MODAL -->
   <div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal">
-      <h3 id="modal-title"></h3>
-      <div id="modal-body"></div>
+      <div class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button class="modal-x" id="modal-x">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
       <div class="modal-actions">
-        <button id="modal-confirm" class="btn-primary">Confirm</button>
         <button id="modal-cancel" class="btn-ghost">Cancel</button>
+        <button id="modal-confirm" class="btn-primary">Confirm</button>
       </div>
     </div>
   </div>
@@ -101,14 +152,20 @@
   <!-- LINK MODAL -->
   <div id="link-modal-overlay" class="modal-overlay hidden">
     <div class="modal">
-      <h3>Sharing Link</h3>
-      <div class="link-display">
-        <input type="text" id="link-output" readonly />
-        <button id="btn-copy-link" class="btn-secondary">Copy</button>
+      <div class="modal-header">
+        <h3>Sharing Link</h3>
+        <button class="modal-x" id="link-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Share this link with your client. They won't need to log in.</p>
+        <div class="link-display">
+          <input type="text" id="link-output" readonly />
+          <button id="btn-copy-link" class="btn-secondary">Copy</button>
+        </div>
       </div>
       <div class="modal-actions">
-        <button id="btn-regen-link" class="btn-danger">Regenerate Link</button>
-        <button id="link-modal-close" class="btn-ghost">Close</button>
+        <button id="btn-regen-link" class="btn-danger">⟳ Regenerate</button>
+        <button id="link-modal-close-btn" class="btn-ghost">Close</button>
       </div>
     </div>
   </div>

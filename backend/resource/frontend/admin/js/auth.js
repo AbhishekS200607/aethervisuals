@@ -59,13 +59,15 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 });
 
 // ─── Logout ───────────────────────────────────────────────────────────────────
-document.getElementById('logout-btn').addEventListener('click', async () => {
+async function doLogout() {
   await _supabase.auth.signOut();
   state.token = null;
   state.currentCompany = null;
   state.currentFolder = null;
   showLogin();
-});
+}
+document.getElementById('logout-btn').addEventListener('click', doLogout);
+document.getElementById('topbar-logout').addEventListener('click', doLogout);
 
 // ─── Mobile sidebar toggle ────────────────────────────────────────────────────
 const sidebar = document.getElementById('sidebar');
