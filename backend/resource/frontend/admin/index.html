@@ -106,6 +106,30 @@
         <div id="folders-list" class="card-grid"></div>
       </div>
 
+      <!-- LOGS -->
+      <div id="view-logs" class="hidden">
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <h1 class="page-title">Access Logs</h1>
+            <span class="page-count" id="logs-count"></span>
+          </div>
+          <button id="btn-refresh-logs" class="btn-secondary">↻ Refresh</button>
+        </div>
+        <div id="logs-table-wrap" style="overflow-x:auto">
+          <table id="logs-table" style="width:100%;border-collapse:collapse;font-size:0.85rem">
+            <thead>
+              <tr style="text-align:left;border-bottom:1px solid var(--border)">
+                <th style="padding:8px 12px">#</th>
+                <th style="padding:8px 12px">Token</th>
+                <th style="padding:8px 12px">IP Address</th>
+                <th style="padding:8px 12px">Accessed At</th>
+              </tr>
+            </thead>
+            <tbody id="logs-body"></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- ASSETS -->
       <div id="view-assets" class="hidden">
         <div class="action-bar">
@@ -177,5 +201,6 @@
   <script src="/admin/js/companies.js"></script>
   <script src="/admin/js/folders.js"></script>
   <script src="/admin/js/upload.js"></script>
+  <script src="/admin/js/logs.js"></script>
 </body>
 </html>

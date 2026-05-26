@@ -12,8 +12,8 @@ const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'imag
 async function compressImage(buffer, mimetype) {
   if (!IMAGE_TYPES.includes(mimetype)) return buffer;
   return sharp(buffer)
-    .resize({ width: 1800, withoutEnlargement: true })
-    .webp({ quality: 82 })
+    .resize({ width: 1200, withoutEnlargement: true })
+    .webp({ quality: 75 })
     .toBuffer();
 }
 
@@ -21,7 +21,7 @@ async function compressImage(buffer, mimetype) {
 async function makeThumbnail(buffer) {
   return sharp(buffer)
     .resize({ width: 400, withoutEnlargement: true })
-    .webp({ quality: 70 })
+    .webp({ quality: 60 })
     .toBuffer();
 }
 
@@ -174,6 +174,18 @@ exports.deleteAsset = async (req, res) => {
   await supabaseAdmin.storage.from('aethervisuals-assets').remove(paths);
   await supabaseAdmin.from('assets').delete().eq('id', id);
   res.json({ success: true });
+};
+
+// LOGS
+exports.getLogs = async (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit) || 100, 500);
+  const { data, error } = await supabaseAdmin
+    .from('access_logs')
+    .select('id, sharing_token, ip_address, accessed_at')
+    .order('accessed_at', { ascending: false })
+    .limit(limit);
+  if (error) return res.status(500).json({ error });
+  res.json(data);
 };
 
 // LINKS

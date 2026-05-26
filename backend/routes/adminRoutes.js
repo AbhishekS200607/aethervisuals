@@ -25,4 +25,6 @@ router.get('/link/company/:id', admin.getCompanyLink);
 router.get('/link/folder/:id', admin.getFolderLink);
 router.post('/link/regenerate/:type/:id', admin.regenerateToken);
 
+router.get('/logs', admin.getLogs);
+
 module.exports = router;

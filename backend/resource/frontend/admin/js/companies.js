@@ -1,6 +1,6 @@
 // ─── View switcher ────────────────────────────────────────────────────────────
 function showView(viewId) {
-  ['view-companies', 'view-folders', 'view-assets'].forEach(id =>
+  ['view-companies', 'view-folders', 'view-assets', 'view-logs'].forEach(id =>
     document.getElementById(id).classList.add('hidden')
   );
   document.getElementById(viewId).classList.remove('hidden');
