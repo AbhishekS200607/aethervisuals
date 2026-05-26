@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AetherVisuals — Asset Delivery</title>
+  <link rel="stylesheet" href="/view/css/view.css" />
+</head>
+<body>
+
+  <header class="view-header">
+    <div class="header-left">
+      <span class="brand-icon">◈</span>
+      <span id="company-name" class="company-name">Loading...</span>
+    </div>
+    <div class="header-right">
+      <span id="expiry-timer" class="expiry-timer"></span>
+      <span class="view-only-badge">VIEW ONLY</span>
+    </div>
+  </header>
+
+  <!-- Mobile timer shown below header -->
+  <div class="mobile-timer hidden" id="mobile-timer"></div>
+
+  <main class="view-main">
+    <div id="asset-grid" class="asset-grid">
+      <div class="loading-state">Loading your assets...</div>
+    </div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox hidden">
+    <button id="lightbox-close" class="lightbox-close">✕</button>
+    <div class="lightbox-content">
+      <img id="lightbox-img" src="" alt="" />
+      <span id="lightbox-name" class="lightbox-name"></span>
+    </div>
+  </div>
+
+  <script src="/view/js/protect.js"></script>
+  <script src="/view/js/loader.js"></script>
+</body>
+</html>
