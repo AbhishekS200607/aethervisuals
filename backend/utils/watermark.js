@@ -1,49 +1,41 @@
 const sharp = require('sharp');
+const TextToSVG = require('text-to-svg');
+const path = require('path');
+
+const textToSVG = TextToSVG.loadSync(path.join(__dirname, '../assets/Inter-Regular.ttf'));
 
 async function applyWatermark(imageBuffer, lines = [process.env.WATERMARK_TEXT || 'PREVIEW']) {
   const { width, height } = await sharp(imageBuffer).metadata();
 
   const fontSize = Math.max(14, Math.floor(width / 18));
   const lineHeight = fontSize * 1.6;
+  const fill = 'rgba(255,255,255,0.28)';
 
-  // Build repeated diagonal tiles across the image
-  const tileW = width;
-  const tileH = height;
-
+  // Build path-based text rows (no system fonts needed)
   const textRows = [];
-  // Repeat watermark rows across the image
-  for (let y = -tileH; y < tileH * 2; y += lineHeight * (lines.length + 2)) {
+  for (let y = -height; y < height * 2; y += lineHeight * (lines.length + 2)) {
     lines.forEach((line, i) => {
-      textRows.push(`<text x="50%" y="${y + i * lineHeight}"
-        text-anchor="middle"
-        fill="rgba(255,255,255,0.28)"
-        font-size="${fontSize}"
-        font-family="Arial, sans-serif"
-        font-weight="bold"
-        letter-spacing="2"
-      >${escXml(line)}</text>`);
+      const svgPath = textToSVG.getPath(line, {
+        x: width / 2,
+        y: y + i * lineHeight,
+        fontSize,
+        anchor: 'center top',
+        attributes: { fill },
+      });
+      textRows.push(svgPath);
     });
   }
 
-  const svg = `
-    <svg width="${tileW}" height="${tileH}" xmlns="http://www.w3.org/2000/svg">
-      <g transform="rotate(-25, ${tileW / 2}, ${tileH / 2})">
-        ${textRows.join('\n')}
-      </g>
-    </svg>`;
+  const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+    <g transform="rotate(-25, ${width / 2}, ${height / 2})">
+      ${textRows.join('\n')}
+    </g>
+  </svg>`;
 
   return sharp(imageBuffer)
     .composite([{ input: Buffer.from(svg), gravity: 'center' }])
     .webp({ quality: 82 })
     .toBuffer();
-}
-
-function escXml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 module.exports = { applyWatermark };
