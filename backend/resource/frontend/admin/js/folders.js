@@ -51,14 +51,11 @@ document.getElementById('btn-new-folder').addEventListener('click', () => {
 });
 
 async function deleteFolder(id) {
-  showModal(
-    'Delete Folder',
-    '<p style="color:var(--text-muted)">This will delete all assets in this folder.</p>',
-    async () => {
-      const res = await apiFetch(`/api/admin/folders/${id}`, { method: 'DELETE' });
-      if (res?.ok) { hideModal(); loadFolders(state.currentCompany.id, state.currentCompany.name); }
-    }
-  );
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if (card) { card.style.transition = 'opacity 0.15s, transform 0.15s'; card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; }
+  const res = await apiFetch(`/api/admin/folders/${id}`, { method: 'DELETE' });
+  if (res?.ok) { showDeleteToast('Folder'); loadFolders(state.currentCompany.id, state.currentCompany.name); }
+  else if (card) { card.style.opacity = '1'; card.style.transform = ''; }
 }
 
 document.getElementById('btn-company-link').addEventListener('click', () => {

@@ -589,13 +589,13 @@ body {
 .hidden { display: none !important; }
 
 /* ── UPLOAD TOAST ────────────────────────────────────────────────────────────── */
-#upload-toast {
+#av-toast {
   position: fixed;
   bottom: 28px;
   left: 50%;
   transform: translateX(-50%) translateY(16px);
   background: var(--surface);
-  border: 1px solid #4ade8033;
+  border: 1px solid #ffffff18;
   border-radius: 40px;
   padding: 10px 20px;
   display: flex;
@@ -610,7 +610,7 @@ body {
   white-space: nowrap;
   pointer-events: none;
 }
-#upload-toast.toast-show {
+#av-toast.toast-show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }

@@ -82,12 +82,9 @@ document.getElementById('btn-new-company').addEventListener('click', () => {
 });
 
 async function deleteCompany(id) {
-  showModal(
-    'Delete Company',
-    '<p style="color:var(--text-muted)">This will delete all folders and assets. Cannot be undone.</p>',
-    async () => {
-      const res = await apiFetch(`/api/admin/companies/${id}`, { method: 'DELETE' });
-      if (res?.ok) { hideModal(); loadCompanies(); }
-    }
-  );
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if (card) { card.style.transition = 'opacity 0.15s, transform 0.15s'; card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; }
+  const res = await apiFetch(`/api/admin/companies/${id}`, { method: 'DELETE' });
+  if (res?.ok) { showDeleteToast('Company'); loadCompanies(); }
+  else if (card) { card.style.opacity = '1'; card.style.transform = ''; }
 }

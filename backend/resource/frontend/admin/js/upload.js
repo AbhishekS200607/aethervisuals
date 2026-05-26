@@ -54,14 +54,11 @@ async function renderAssets(folderId) {
 }
 
 async function deleteAsset(id) {
-  showModal(
-    'Delete Asset',
-    '<p style="color:var(--text-muted)">This will permanently delete this file.</p>',
-    async () => {
-      const res = await apiFetch(`/api/admin/assets/${id}`, { method: 'DELETE' });
-      if (res?.ok) { hideModal(); await renderAssets(state.currentFolder.id); }
-    }
-  );
+  const card = document.querySelector(`.asset-card[data-id="${id}"]`);
+  if (card) { card.style.transition = 'opacity 0.15s, transform 0.15s'; card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; }
+  const res = await apiFetch(`/api/admin/assets/${id}`, { method: 'DELETE' });
+  if (res?.ok) { showDeleteToast('Asset'); await renderAssets(state.currentFolder.id); }
+  else if (card) { card.style.opacity = '1'; card.style.transform = ''; }
 }
 
 // ─── Drop zone & upload ───────────────────────────────────────────────────────
@@ -107,26 +104,42 @@ async function uploadFiles(files) {
   showUploadToast(done);
 }
 
+function showUploadToast(count) {
+  showToast(
+    `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="8.5" stroke="#4ade80" stroke-width="1"/>
+      <path d="M5 9.5l3 3 5-5" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+        stroke-dasharray="12" stroke-dashoffset="12">
+        <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.35s" begin="0.1s" fill="freeze"/>
+      </path>
+    </svg>`,
+    `${count} file${count > 1 ? 's' : ''} uploaded successfully`
+  );
+}
+
 document.getElementById('btn-folder-link').addEventListener('click', () => {
   if (state.currentFolder) showFolderLink(state.currentFolder.id);
 });
 
-function showUploadToast(count) {
-  const existing = document.getElementById('upload-toast');
-  if (existing) existing.remove();
-
-  const toast = document.createElement('div');
-  toast.id = 'upload-toast';
-  toast.innerHTML = `
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <circle cx="9" cy="9" r="8.5" stroke="#4ade80" stroke-width="1"/>
-      <path d="M5 9.5l3 3 5-5" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-        stroke-dasharray="12" stroke-dashoffset="12">
-        <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.35s" begin="0.1s" fill="freeze" />
+function showDeleteToast(label) {
+  showToast(
+    `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="8.5" stroke="#f87171" stroke-width="1"/>
+      <path d="M6 7h6M7.5 7V5.5h3V7M8 10v3M10 10v3" stroke="#f87171" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        stroke-dasharray="20" stroke-dashoffset="20">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.3s" begin="0.05s" fill="freeze"/>
       </path>
-    </svg>
-    <span>${count} file${count > 1 ? 's' : ''} uploaded successfully</span>
-  `;
+    </svg>`,
+    `${label} deleted`
+  );
+}
+
+function showToast(iconSvg, message) {
+  const existing = document.getElementById('av-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'av-toast';
+  toast.innerHTML = `${iconSvg}<span>${message}</span>`;
   document.body.appendChild(toast);
   requestAnimationFrame(() => toast.classList.add('toast-show'));
   setTimeout(() => {
