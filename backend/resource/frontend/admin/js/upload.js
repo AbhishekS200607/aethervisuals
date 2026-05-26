@@ -100,13 +100,37 @@ async function uploadFiles(files) {
     progressBar.style.width = `${(done / files.length) * 100}%`;
   }
 
-  progressText.textContent = `Done! ${done} file(s) uploaded.`;
-  setTimeout(() => { progressWrap.classList.add('hidden'); progressBar.style.width = '0%'; }, 2000);
-
+  progressWrap.classList.add('hidden');
+  progressBar.style.width = '0%';
   fileInput.value = '';
   await renderAssets(state.currentFolder.id);
+  showUploadToast(done);
 }
 
 document.getElementById('btn-folder-link').addEventListener('click', () => {
   if (state.currentFolder) showFolderLink(state.currentFolder.id);
 });
+
+function showUploadToast(count) {
+  const existing = document.getElementById('upload-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'upload-toast';
+  toast.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="8.5" stroke="#4ade80" stroke-width="1"/>
+      <path d="M5 9.5l3 3 5-5" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+        stroke-dasharray="12" stroke-dashoffset="12">
+        <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.35s" begin="0.1s" fill="freeze" />
+      </path>
+    </svg>
+    <span>${count} file${count > 1 ? 's' : ''} uploaded successfully</span>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('toast-show'));
+  setTimeout(() => {
+    toast.classList.remove('toast-show');
+    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+  }, 3000);
+}

@@ -588,6 +588,33 @@ body {
 
 .hidden { display: none !important; }
 
+/* ── UPLOAD TOAST ────────────────────────────────────────────────────────────── */
+#upload-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--surface);
+  border: 1px solid #4ade8033;
+  border-radius: 40px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 200;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#upload-toast.toast-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ── DESKTOP MODAL OVERRIDE ──────────────────────────────────────────────────── */
 @media (min-width: 641px) {
   .modal-overlay { align-items: center; padding: 20px; }
