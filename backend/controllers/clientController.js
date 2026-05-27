@@ -8,7 +8,15 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 const wmCache = new Map();
 const WM_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
+function setNoStore(res) {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+}
+
 exports.getAssetsByToken = async (req, res) => {
+  setNoStore(res);
+
   const { token } = req.query;
   if (!token) return res.status(400).json({ error: 'Token required' });
   if (!UUID_REGEX.test(token)) return res.status(400).json({ error: 'Invalid token format' });
@@ -55,23 +63,15 @@ exports.getAssetsByToken = async (req, res) => {
     folder_name: folderMap[asset.folder_id] || '',
     mime_type: asset.mime_type,
     size_bytes: asset.size_bytes,
-    // Non-image files still get a signed URL for direct download
-    url: asset.mime_type?.startsWith('image/') ? null : asset.storage_path,
+    url: null,
   }));
 
-  // Generate signed URLs only for non-image files
   const expiresIn = parseInt(process.env.SIGNED_URL_EXPIRY || '3600');
-  const signedList = await Promise.all(assetList.map(async (a) => {
-    if (a.mime_type?.startsWith('image/')) return a;
-    const { data: signed } = await supabaseAdmin.storage
-      .from('aethervisuals-assets').createSignedUrl(a.url, expiresIn);
-    return { ...a, url: signed?.signedUrl || null };
-  }));
 
   // Log access (fire and forget)
   supabaseAdmin.from('access_logs').insert({ sharing_token: token, ip_address: req.ip });
 
-  res.json({ company: companyData, assets: signedList, expires_in: expiresIn });
+  res.json({ company: companyData, assets: assetList, expires_in: expiresIn });
 };
 
 // Watermarked image proxy with in-memory cache
@@ -87,7 +87,7 @@ exports.getWatermarkedImage = async (req, res) => {
   const cached = wmCache.get(cacheKey);
   if (cached && cached.expires > Date.now()) {
     res.set('Content-Type', 'image/webp');
-    res.set('Cache-Control', 'private, max-age=3600');
+    setNoStore(res);
     return res.send(cached.buffer);
   }
 
@@ -129,6 +129,6 @@ exports.getWatermarkedImage = async (req, res) => {
   wmCache.set(cacheKey, { buffer: watermarked, expires: Date.now() + WM_CACHE_TTL });
 
   res.set('Content-Type', 'image/webp');
-  res.set('Cache-Control', 'private, max-age=3600');
+  setNoStore(res);
   res.send(watermarked);
 };

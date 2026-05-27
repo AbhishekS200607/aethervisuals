@@ -12,6 +12,14 @@ const clientRoutes = require('./routes/clientRoutes');
 const app = express();
 const isProd = process.env.NODE_ENV === 'production';
 
+function noStoreProtectedView(req, res, next) {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('X-Robots-Tag', 'noindex, noarchive, nosnippet');
+  next();
+}
+
 // Trust reverse proxy (Nginx/Caddy/Railway/Render) — fixes req.ip
 app.set('trust proxy', 1);
 
@@ -56,8 +64,8 @@ app.get('/admin*', (req, res) => {
   res.send(adminHtmlInjected);
 });
 
-app.use('/view', express.static(path.join(__dirname, 'resource/frontend/customer')));
-app.get('/view*', (req, res) =>
+app.use('/view', noStoreProtectedView, express.static(path.join(__dirname, 'resource/frontend/customer')));
+app.get('/view*', noStoreProtectedView, (req, res) =>
   res.sendFile(path.join(__dirname, 'resource/frontend/customer/index.html'))
 );
 
